@@ -1,16 +1,42 @@
 ---
-
+import { actions } from 'astro:actions'
+import Button from '../components/ui/Button.astro'
+import '../styles/global.css'
+import { ArrowUpLeft } from '@lucide/astro'
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Coming Soon... | DevWorks Studio</title>
+  </head>
+  <body>
+    <section class="flex h-svh flex-col items-center justify-center gap-6">
+      <img
+        src="https://storage.googleapis.com/dw-agency/website/img/dw-logo.svg"
+        alt="Logo de DevWorks Studio"
+      />
+      <div class="flex flex-col items-center justify-center text-center">
+        <h1 class="font-heading text-brand-700 text-2xl">Bienvenido a DevWorks Studio</h1>
+        <p>
+          Este es nuestro template de desarrollo de sitios web. Para conocer más sobre nosotros
+          visita:
+        </p>
+        <Button
+          label="Visita nuestro sitio"
+          href="https://devworksstudio.site"
+          target="_blank"
+          className="mt-12"
+        >
+          <ArrowUpLeft slot={'icon'} />
+        </Button>
+      </div>
+    </section>
+    <footer class="mt-auto">
+      <h2>Un sitio por <a href="https://devworksstudio.site">DevWorks Studio</a></h2>
+    </footer>
+  </body>
 </html>

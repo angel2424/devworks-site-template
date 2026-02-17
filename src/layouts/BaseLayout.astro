@@ -1,0 +1,106 @@
+---
+import '../styles/global.css'
+const { title = 'DevWorks Studio', description = 'Recupera tu sonrisa con confianza.' } =
+  Astro.props
+import { ClientRouter } from 'astro:transitions'
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <ClientRouter />
+  </head>
+  <body class="overflow-x-hidden">
+    <div
+      id="loader"
+      class="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-white transition-opacity duration-500"
+    >
+      <div class="loader"></div>
+      <p class="text-brand-900 font-heading mt-6 text-base uppercase">Cargando...</p>
+    </div>
+    <div id="smooth-wrapper">
+      <div id="smooth-content">
+        <slot />
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  import gsap from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  import { ScrollSmoother } from 'gsap/ScrollSmoother'
+  import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
+
+  let smootherInstance: ScrollSmoother | null = null
+
+  const initGSAP = () => {
+    gsap.registerPlugin(ScrollTrigger, ScrollSmoother, ScrollToPlugin)
+
+    // Ensure we start fresh
+    if (smootherInstance) {
+      smootherInstance.kill()
+    }
+
+    smootherInstance = ScrollSmoother.create({
+      wrapper: '#smooth-wrapper',
+      content: '#smooth-content',
+      smooth: 1.2,
+      effects: true,
+    })
+
+    ScrollTrigger.refresh()
+  }
+
+  const hideLoader = () => {
+    const loader = document.getElementById('loader')
+    if (loader) {
+      loader.style.opacity = '0'
+      setTimeout(() => {
+        loader.style.display = 'none'
+      }, 500)
+    }
+  }
+
+  const showLoader = () => {
+    const loader = document.getElementById('loader')
+    if (loader) {
+      loader.style.display = 'flex'
+      loader.style.opacity = '1'
+    }
+  }
+
+  // 1. Initial Load & After Navigation
+  document.addEventListener('astro:page-load', () => {
+    initGSAP()
+    hideLoader()
+  })
+
+  // 2. Before navigation starts (Show loader)
+  document.addEventListener('astro:before-preparation', () => {
+    showLoader()
+  })
+
+  // 3. Before swapping content (Kill GSAP to prevent "Hanging")
+  document.addEventListener('astro:before-swap', () => {
+    if (smootherInstance) {
+      smootherInstance.kill()
+      ScrollTrigger.getAll().forEach((t) => t.kill())
+    }
+  })
+</script>
